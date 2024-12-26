@@ -36,4 +36,20 @@ class PengeluaranModel extends Model
     {
         return $this->hasMany(PengeluaranImages::class, 'pengeluaran_id', 'id');
     }
+
+    public function getTotalPengeluaranBulanan()
+    {
+        $bulan = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        $total = [];
+        foreach ($bulan as $key => $value) {
+            $total[$value] = $this->whereMonth('tanggal', $key + 1)
+                ->join('detail_pengeluaran', 'pengeluaran.id', '=', 'detail_pengeluaran.pengeluaran_id')
+                ->sum('detail_pengeluaran.total_harga');
+        }
+
+        return $total;
+    }
 }

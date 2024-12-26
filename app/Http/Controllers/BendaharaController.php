@@ -25,10 +25,15 @@ class BendaharaController extends Controller
     {
         $modelSaldo = new SaldoModel();
         $modelPemasukan = new PemasukanModel();
+        $modelPengeluaran = new PengeluaranModel();
         $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $modelPemasukan->sum('nominal');
         $saldo_awal = $modelSaldo->getSaldoAll()->first();
+        $pemasukan = $modelPemasukan->getTotalPemasukanBulanan();
+        $pengeluaran = $modelPengeluaran->getTotalPengeluaranBulanan();
 
-        return view('dashboard', compact('saldo_awal', 'saldo_akhir'));
+        // dd($saldo_awal, $saldo_akhir, $pemasukan, $pengeluaran);
+
+        return view('dashboard', compact('saldo_awal', 'saldo_akhir', 'pemasukan', 'pengeluaran'));
     }
 
     public function saldo()
