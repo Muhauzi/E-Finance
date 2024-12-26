@@ -33,4 +33,19 @@ class PemasukanModel extends Model
             ->where('pemasukan.id_detail_account', $id)
             ->get();
     }
+
+    public function getTotalPemasukanBulanan()
+    {
+        $bulan = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        $total = [];
+        foreach ($bulan as $key => $value) {
+            $total[$value] = $this->whereMonth('tanggal', $key + 1)
+                ->sum('nominal');
+        }
+
+        return $total;
+    }
 }

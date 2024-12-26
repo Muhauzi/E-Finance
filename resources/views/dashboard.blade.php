@@ -50,7 +50,7 @@
                             <div class="d-flex align-items-center mb-3">
                                 <h4 class="fs-4 flex-grow-1 mb-0">Rp. <span class="counter-value"
                                         data-target="{{$saldo_awal->nominal}}">
-                                    {{ number_format($saldo_awal->nominal, 0, ',', '.') }}
+                                        {{ number_format($saldo_awal->nominal, 0, ',', '.') }}
                                     </span></h4>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                             <div class="d-flex align-items-center mb-3">
                                 <h4 class="fs-4 flex-grow-1 mb-0">Rp. <span class="counter-value"
                                         data-target="{{$saldo_akhir}}">
-                                    {{ number_format($saldo_akhir, 0, ',', '.') }}
+                                        {{ number_format($saldo_akhir, 0, ',', '.') }}
                                     </span></h4>
                             </div>
                         </div>
@@ -165,99 +165,30 @@
         </div>
 
         <script>
-            // Area chart keuangan
-            var series = {
-                "rekapkas": {
-                    "pengeluaran": [
-                        8107.85,
-                        8128.0,
-                        8122.9,
-                        8165.5,
-                        8340.7,
-                        8423.7,
-                        8423.5,
-                        8514.3,
-                        8481.85,
-                        8487.7,
-                        8506.9,
-                        8626.2
-                    ],
-                    "pemasukan": [
-                        8423.7,
-                        8423.5,
-                        8514.3,
-                        8481.85,
-                        8487.7,
-                        8506.9,
-                        8626.2,
-                        8668.95,
-                        8668.95,
-                        8668.95,
-                        8668.95,
-                        8668.95
-                    ],
-                    "bulan": [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec"
-                    ]
-                }
-            }
-        </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var options = {
-                    series: [{
-                        name: 'Pengeluaran',
-                        data: series.pengeluaran.y
-                    }],
-                    chart: {
-                        type: 'area',
-                        height: 350,
-                        zoom: {
-                            enabled: false
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        curve: 'smooth'
-                    },
-                    xaxis: {
-                        type: 'datetime',
-                        categories: series.pengeluaran.x
-                    },
-                    tooltip: {
-                        x: {
-                            format: 'dd MMM yyyy'
-                        },
-                    },
-                    colors: ['#556ee6']
-                };
+            // Data pengeluaran dan pemasukan dari backend
+            const pengeluaran = @json($pengeluaran); // {"Januari": 0, "Februari": 0, ...}
+            const pemasukan = @json($pemasukan); // {"Januari": 0, "Februari": 0, ...}
 
-                var chart = new ApexCharts(document.querySelector("#area_chart_pengeluaran"), options);
-                chart.render();
-            });
+            // Konversi data pengeluaran dan pemasukan ke array
+            const bulan = Object.keys(pengeluaran); // ["Januari", "Februari", ..., "Desember"]
+            const dataPengeluaran = Object.values(pengeluaran); // [0, 0, ..., 2116000]
+            const dataPemasukan = Object.values(pemasukan); // [0, 0, ..., ...]
+
+            console.log({
+                bulan,
+                dataPengeluaran,
+                dataPemasukan
+            }); // Debugging
 
             document.addEventListener("DOMContentLoaded", function() {
                 var options = {
                     series: [{
                             name: 'Pemasukan',
-                            data: series.pemasukan.prices
+                            data: dataPemasukan
                         },
                         {
                             name: 'Pengeluaran',
-                            data: series.pengeluaran.y
+                            data: dataPengeluaran
                         }
                     ],
                     chart: {
@@ -274,47 +205,7 @@
                         curve: 'smooth'
                     },
                     xaxis: {
-                        type: 'datetime',
-                        categories: series.pemasukan.dates
-                    },
-                    tooltip: {
-                        x: {
-                            format: 'dd MMM yyyy'
-                        },
-                    },
-                    colors: ['#34c38f', '#556ee6']
-                };
-
-                var chart = new ApexCharts(document.querySelector("#area_chart_pemasukan"), options);
-                chart.render();
-            });
-
-            document.addEventListener("DOMContentLoaded", function() {
-                var options = {
-                    series: [{
-                            name: 'Pemasukan',
-                            data: series.rekapkas.pemasukan
-                        },
-                        {
-                            name: 'Pengeluaran',
-                            data: series.rekapkas.pengeluaran
-                        }
-                    ],
-                    chart: {
-                        type: 'area',
-                        height: 350,
-                        zoom: {
-                            enabled: false
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        curve: 'smooth'
-                    },
-                    xaxis: {
-                        categories: series.rekapkas.bulan
+                        categories: bulan
                     },
                     yaxis: {
                         title: {
@@ -326,9 +217,7 @@
                     },
                     tooltip: {
                         y: {
-                            formatter: function(val) {
-                                return "Rp " + val + " Ribu"
-                            }
+                            formatter: val => "Rp " + val.toLocaleString()
                         }
                     },
                     colors: ['#00E396', '#FF4560']

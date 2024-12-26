@@ -58,40 +58,14 @@
                                         <td class="nominal">Rp. {{ number_format($item->total, 0, ',', '.') }}</td>
                                         <td class="struk">
                                             @if ($item->images)
-                                            <a href="{{ asset('pengeluaran/struk/' . $item->images['file']) }}" target="_blank">
-                                            <i class="ri-file-download-line align-middle me-1"></i>    
-                                            Lihat Struk</a>
+                                            <a class="btn btn-success" href="{{ asset('pengeluaran/struk/' . $item->images['file']) }}" target="_blank">
+                                                <i class="ri-file-download-line align-middle me-1"></i>
+                                                Lihat Struk</a>
                                             @else
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadStrukModal">
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadStrukModal-{{$item->id}}">
                                                 <i class="ri-upload-2-line align-middle me-1"></i>
                                                 Upload Struk
                                             </button>
-
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="uploadStrukModal" tabindex="-1" aria-labelledby="uploadStrukModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="uploadStrukModalLabel">Upload Struk</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <!-- cspell: disable -->
-                                                            <form action="{{ route('keuangan.pengeluaran.upload_struk') }}" method="POST" enctype="multipart/form-data">
-                                                                @csrf
-                                                                @method('POST')
-                                                                <input type="hidden" name="pengeluaran_id" value="{{ $item->id }}">
-                                                                <div class="mb-3">
-                                                                    <label for="struk" class="form-label">Struk</label>
-                                                                    <input type="file" class="form-control" id="struk" name="struk_nota" required accept=".pdf">
-                                                                </div>
-                                                                <button type="submit" class="btn btn-primary">Upload</button>
-                                                            </form>
-                                                            <!-- cspell: enable -->
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             @endif
                                         </td>
                                         @endforeach
@@ -142,6 +116,36 @@
             previewsContainer: "#dropzone-preview",
         });
     </script>
+
+
+
+    <!-- Modal -->
+    @foreach ($data as $item)
+    <div class="modal fade" id="uploadStrukModal-{{$item->id}}" tabindex="-1" aria-labelledby="uploadStrukModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadStrukModalLabel">Upload Struk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- cspell: disable -->
+                    <form action="{{ route('keuangan.pengeluaran.upload_struk') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('POST')
+                        <input type="hidden" name="pengeluaran_id" value="{{ $item->id }}">
+                        <div class="mb-3">
+                            <label for="struk" class="form-label">Struk</label>
+                            <input type="file" class="form-control" id="struk" name="struk_nota" required accept=".pdf">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                    <!-- cspell: enable -->
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
 
     <x-alert></x-alert>
 
