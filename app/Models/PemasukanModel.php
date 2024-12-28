@@ -48,4 +48,9 @@ class PemasukanModel extends Model
 
         return $total;
     }
+
+    public function getPemasukanBulanan($month, $year)
+    {
+        return $this->whereMonth('tanggal', $month)->whereYear('tanggal', $year)->sum('nominal');
+    }
 }

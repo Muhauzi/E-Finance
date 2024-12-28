@@ -66,6 +66,7 @@ Route::prefix('keuangan')->name('keuangan.')->group(function () {
     Route::get('/pengeluaran/{id}/create_detail', [BendaharaController::class, 'createDetailPengeluaran'])->name('pengeluaran.create_detail');
     Route::post('/pengeluaran/store_detail', [BendaharaController::class, 'storeDetailPengeluaran'])->name('pengeluaran.store_detail');
     Route::post('/pengeluaran/upload_struk', [BendaharaController::class, 'uploadStruk'])->name('pengeluaran.upload_struk');
+    Route::get('/pengeluaran/detail/{id}', [BendaharaController::class, 'detailPengeluaran'])->name('pengeluaran.detail');
 });
 
 Route::get('/dashboard', [BendaharaController::class, 'index'])->name('dashboard');

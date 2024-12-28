@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('pengeluaran', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_detail_account')->constrained('detail_account', 'id');
+            $table->foreignId('id_penginput')->constrained('users', 'id');
             $table->string('jenis_pengeluaran');
             $table->string('nominal');
             $table->text('keterangan');

@@ -26,10 +26,14 @@ class BendaharaController extends Controller
         $modelSaldo = new SaldoModel();
         $modelPemasukan = new PemasukanModel();
         $modelPengeluaran = new PengeluaranModel();
-        $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $modelPemasukan->sum('nominal');
+        $modelDetailPengeluaran = new DetailPengeluaran();
         $saldo_awal = $modelSaldo->getSaldoAll()->first();
         $pemasukan = $modelPemasukan->getTotalPemasukanBulanan();
         $pengeluaran = $modelPengeluaran->getTotalPengeluaranBulanan();
+        $pengeluaranBulanan = $modelDetailPengeluaran->totalPenegeluranBulanan(date('m'), date('Y'));
+        $pemasukanBulanan = $modelPemasukan->getPemasukanBulanan(date('m'), date('Y'));
+        
+        $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $pemasukanBulanan - $pengeluaranBulanan;
 
         // dd($saldo_awal, $saldo_akhir, $pemasukan, $pengeluaran);
 
@@ -41,10 +45,12 @@ class BendaharaController extends Controller
         $model = new SaldoModel();
         $modelPemasukan = new PemasukanModel();
         $data = $model->getSaldoAll();
+        $modelPengeluaran = new PengeluaranModel();
         foreach ($data as $key => $value) {
             $pemasukan = $modelPemasukan->getPemasukanByAccount($value->detail_account_id)->first();
             if ($pemasukan && $value->detail_account_id == $pemasukan->id_detail_account) {
                 $value->nominal += $modelPemasukan->where('id_detail_account', $value->detail_account_id)->sum('nominal');
+                $value->nominal -= $modelPengeluaran->getTotalPengeluaran($value->detail_account_id);
             }
         }
         return view('bendahara.saldo.index', compact('data'));
@@ -276,5 +282,17 @@ class BendaharaController extends Controller
 
         return redirect()->route('keuangan.pengeluaran')->with('success', 'Struk berhasil diupload');
 
+    }
+
+    public function detailPengeluaran($id)
+    {
+        $model = new DetailPengeluaran();
+        $data = $model->getDetailPengeluaran($id);
+        $pengeluaran = PengeluaranModel::find($id);
+        $total = 0;
+        foreach ($data as $key => $value) {
+            $total += $value->total_harga;
+        }
+        return view('bendahara.pengeluaran.detail', compact('data', 'pengeluaran', 'total'));
     }
 }

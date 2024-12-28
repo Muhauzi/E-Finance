@@ -109,7 +109,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i data-feather="check" style="width: 16px; height: 16px;"></i>
                                 Simpan</button>
-                            <a href="{{ route('pemasukan') }}" class="btn btn-secondary">
+                            <a href="{{ route('keuangan.pemasukan') }}" class="btn btn-secondary">
                                 <i data-feather="x" style="width: 16px; height: 16px;"></i>
                                 Batal</a>
                         </div>

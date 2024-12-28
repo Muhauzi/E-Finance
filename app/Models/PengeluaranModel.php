@@ -10,6 +10,7 @@ class PengeluaranModel extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'id_penginput',
+        'id_detail_account',
         'tanggal',
         'jenis_pengeluaran',
         'keterangan',
@@ -51,5 +52,12 @@ class PengeluaranModel extends Model
         }
 
         return $total;
+    }
+
+    public function getTotalPengeluaran($id_detail_account)
+    {
+        return $this->join('pengeluaran', 'detail_pengeluaran.pengeluaran_id', '=', 'pengeluaran.id')
+            ->where('pengeluaran.id_penginput', $id_detail_account)
+            ->sum('total_harga');
     }
 }

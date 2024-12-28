@@ -45,11 +45,94 @@
                                 </td>
                             </tr>
                         </table>
+
+                        <hr>
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Satuan</th>
+                                    <th scope="col">Harga Satuan</th>
+                                    <th scope="col">Total Harga</th>
+                                    <th scope="col">
+                                        <button type="button" class="btn btn-primary" id="addRow">
+                                            <i data-feather="plus" style="width: 16px; height: 16px;"></i>
+                                        </button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($detail as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <input type="text" class="form-control" name="item[]" value="{{ $item->item }}">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" name="jumlah[]" value="{{ $item->jumlah }}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="satuan[]" value="{{ $item->satuan }}">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" name="harga_satuan[]" value="{{ $item->harga_satuan }}">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control total-harga" name="total_harga[]" value="{{ $item->total_harga }}">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger" id="deleteRow">
+                                            <i data-feather="trash" style="width: 16px; height: 16px;"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" class="text-end">Total</td>
+                                    <td>
+                                        <div class="total font-weight-bold"></div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Hitung total keseluruhan
+        function updateGrandTotal() {
+            let grandTotal = 0;
+            $('.total-harga').each(function() {
+                grandTotal += parseFloat($(this).val().replace(/[^0-9,-]+/g, "")) || 0;
+            });
+            $('.total').html('<strong>' + formatRupiah(grandTotal) + '</strong>'); // Tampilkan total pada elemen .total dengan font tebal
+        }
+
+        // Format angka menjadi format Rupiah
+        function formatRupiah(angka) {
+            const numberString = angka.toString().replace(/[^,\d]/g, '');
+            const split = numberString.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            const ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                const separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+            return 'Rp. ' + rupiah;
+        }
+    </script>
 
     <x-alert></x-alert>
     <x-confirm-alert></x-confirm-alert>

@@ -335,4 +335,5 @@ class AdminController extends Controller
         $data->delete();
         return redirect()->route('admin.detail_account')->with('success', 'Data berhasil dihapus');
     }
+    
 }

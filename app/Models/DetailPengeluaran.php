@@ -24,4 +24,14 @@ class DetailPengeluaran extends Model
     {
         return $this->belongsTo(PengeluaranModel::class, 'pengeluaran_id', 'id');
     }
+
+    public function totalPenegeluranBulanan($month, $year)
+    {
+        $this->table = 'detail_pengeluaran';
+        return $this->join('pengeluaran', 'detail_pengeluaran.pengeluaran_id', '=', 'pengeluaran.id')
+            ->whereMonth('pengeluaran.tanggal', $month)
+            ->whereYear('pengeluaran.tanggal', $year)
+            ->sum('total_harga');
+    }
+
 }
