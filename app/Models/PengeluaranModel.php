@@ -68,6 +68,8 @@ class PengeluaranModel extends Model
 
     public function getPengeluaranByAccount($id_detail_account)
     {
-        return $this->where('id_detail_account', $id_detail_account)->get();
+        return $this->join('detail_pengeluaran', 'pengeluaran.id', '=', 'detail_pengeluaran.pengeluaran_id')
+            ->where('pengeluaran.id_detail_account', $id_detail_account)
+            ->get();
     }   
 }

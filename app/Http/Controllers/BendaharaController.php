@@ -50,9 +50,11 @@ class BendaharaController extends Controller
         foreach ($data as $key => $value) {
             $pemasukan = $modelPemasukan->getPemasukanByAccount($value->detail_account_id)->first();
             $pengeluaran = $modelPengeluaran->getPengeluaranByAccount($value->detail_account_id)->first();
+            // dd($pengeluaran);
             if ($pemasukan && $value->detail_account_id == $pemasukan->id_detail_account || $pengeluaran && $value->detail_account_id == $pengeluaran->id_detail_account) {
-                $value->nominal += $modelPemasukan->where('id_detail_account', $value->detail_account_id)->sum('nominal');
-                $value->nominal -= $pengeluaran->pengeluaranDetail->sum('total_harga');
+                $pemasukan = $modelPemasukan->getPemasukanByAccount($value->detail_account_id)->sum('nominal');
+                $pengeluaran = $modelPengeluaran->getPengeluaranByAccount($value->detail_account_id)->sum('total_harga');
+                $value->nominal = $value->nominal + $pemasukan - $pengeluaran;
             }
         }
         return view('bendahara.saldo.index', compact('data'));
