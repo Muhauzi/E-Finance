@@ -14,9 +14,12 @@ use App\Models\PengeluaranModel;
 use App\Models\DetailPengeluaran;
 use App\Models\PengeluaranImages;
 use App\Models\DetailAccountModel;
+use App\Models\DetailPengajuanModel;
+use App\Models\LaporanKeuangan;
 use App\Models\SaldoModel;
 use App\Models\LaporanPengajuanModel;
 use App\Models\PengajuanModel;
+use App\Models\PengajuanDanaModel;
 
 
 class BendaharaController extends Controller
@@ -32,10 +35,8 @@ class BendaharaController extends Controller
         $pengeluaran = $modelPengeluaran->getTotalPengeluaranBulanan();
         $pengeluaranBulanan = $modelDetailPengeluaran->totalPenegeluranBulanan(date('m'), date('Y'));
         $pemasukanBulanan = $modelPemasukan->getPemasukanBulanan(date('m'), date('Y'));
-        
-        $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $pemasukanBulanan - $pengeluaranBulanan;
 
-        // dd($saldo_awal, $saldo_akhir, $pemasukan, $pengeluaran);
+        $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $pemasukanBulanan - $pengeluaranBulanan;
 
         return view('dashboard', compact('saldo_awal', 'saldo_akhir', 'pemasukan', 'pengeluaran'));
     }
@@ -48,9 +49,10 @@ class BendaharaController extends Controller
         $modelPengeluaran = new PengeluaranModel();
         foreach ($data as $key => $value) {
             $pemasukan = $modelPemasukan->getPemasukanByAccount($value->detail_account_id)->first();
-            if ($pemasukan && $value->detail_account_id == $pemasukan->id_detail_account) {
+            $pengeluaran = $modelPengeluaran->getPengeluaranByAccount($value->detail_account_id)->first();
+            if ($pemasukan && $value->detail_account_id == $pemasukan->id_detail_account || $pengeluaran && $value->detail_account_id == $pengeluaran->id_detail_account) {
                 $value->nominal += $modelPemasukan->where('id_detail_account', $value->detail_account_id)->sum('nominal');
-                $value->nominal -= $modelPengeluaran->getTotalPengeluaran($value->detail_account_id);
+                $value->nominal -= $pengeluaran->pengeluaranDetail->sum('total_harga');
             }
         }
         return view('bendahara.saldo.index', compact('data'));
@@ -78,9 +80,17 @@ class BendaharaController extends Controller
         $data->keterangan = $request->keterangan;
         $data->save();
 
+        $modelLaporan = new LaporanKeuangan();
+        $modelLaporan->tanggal = $request->tanggal;
+        $modelLaporan->keterangan = $request->keterangan;
+        $modelLaporan->pengeluaran = 0; // Pengeluaran
+        $modelLaporan->pemasukan = $request->nominal; // Pemasukan
+        $saldo_akhir = $modelLaporan->getSaldoAkhir();
+        $modelLaporan->saldo_akhir = $saldo_akhir->saldo_akhir + $request->nominal; // Saldo
+        $modelLaporan->save();
+
         return redirect()->route('keuangan.saldo')->with('success', 'Saldo berhasil ditambahkan');
     }
-
 
     // Pemasukan
     public function pemasukan()
@@ -115,6 +125,15 @@ class BendaharaController extends Controller
         $data->id_penginput = Auth::user()->id;
         $data->save();
 
+        $modelLaporan = new LaporanKeuangan();
+        $modelLaporan->tanggal = $request->tanggal;
+        $modelLaporan->keterangan = $request->sumber_pemasukan;
+        $modelLaporan->pengeluaran = 0; // Pengeluaran
+        $modelLaporan->pemasukan = $request->nominal; // Pemasukan
+        $saldo_akhir = $modelLaporan->getSaldoAkhir();
+        $modelLaporan->saldo_akhir = $saldo_akhir->saldo_akhir + $request->nominal; // Saldo
+        $modelLaporan->save();
+
         return redirect()->route('keuangan.pemasukan')->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -142,8 +161,16 @@ class BendaharaController extends Controller
         $data->keterangan = $request->keterangan;
         $data->tanggal = $request->tanggal;
         $data->id_penginput = Auth::user()->id;
-
         $data->save();
+
+        $modelLaporan = new LaporanKeuangan();
+        $modelLaporan->tanggal = $request->tanggal;
+        $modelLaporan->keterangan = $request->sumber_pemasukan;
+        $modelLaporan->pengeluaran = 0; // Pengeluaran
+        $modelLaporan->pemasukan = $request->nominal; // Pemasukan
+        $saldo_akhir = $modelLaporan->getSaldoAkhir();
+        $modelLaporan->saldo_akhir = $saldo_akhir->saldo_akhir + $request->nominal; // Saldo
+        $modelLaporan->save();
 
         return redirect()->route('keuangan.pemasukan')->with('success', 'Data berhasil diubah');
     }
@@ -177,7 +204,9 @@ class BendaharaController extends Controller
 
     public function createPengeluaran()
     {
-        return view('bendahara.pengeluaran.create');
+        $modelDetail = new DetailAccountModel();
+        $detailAccount = $modelDetail->all();
+        return view('bendahara.pengeluaran.create', compact('detailAccount'));
     }
 
     public function storePengeluaran(Request $request)
@@ -190,11 +219,11 @@ class BendaharaController extends Controller
 
         $data = new PengeluaranModel();
         $data->tanggal = $request->tanggal;
+        $data->id_detail_account = $request->id_detail_account;
         $data->jenis_pengeluaran = $request->jenis_pengeluaran;
         $data->keterangan = $request->keterangan;
         $data->id_penginput = Auth::user()->id;
         $data->save();
-
         $id = $data->id;
 
         return redirect()->route('keuangan.pengeluaran.create_detail', $id);
@@ -253,6 +282,19 @@ class BendaharaController extends Controller
             }
         }
 
+        $grand_total = array_sum($dataInput['total_harga']);
+        $tanggal = PengeluaranModel::find($dataInput['pengeluaran_id'])->tanggal;
+        $keterangan = PengeluaranModel::find($dataInput['pengeluaran_id'])->jenis_pengeluaran;
+
+        $modelLaporan = new LaporanKeuangan();
+        $modelLaporan->tanggal = $tanggal;
+        $modelLaporan->keterangan = $keterangan;
+        $modelLaporan->pengeluaran = $grand_total; // Pengeluaran
+        $modelLaporan->pemasukan = 0; // Pemasukan
+        $saldo_akhir = $modelLaporan->getSaldoAkhir();
+        $modelLaporan->saldo_akhir = $saldo_akhir->saldo_akhir - $grand_total; // Saldo
+        $modelLaporan->save();
+
         return redirect()->route('keuangan.pengeluaran')->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -281,18 +323,176 @@ class BendaharaController extends Controller
         }
 
         return redirect()->route('keuangan.pengeluaran')->with('success', 'Struk berhasil diupload');
-
     }
 
     public function detailPengeluaran($id)
     {
-        $model = new DetailPengeluaran();
-        $data = $model->getDetailPengeluaran($id);
-        $pengeluaran = PengeluaranModel::find($id);
-        $total = 0;
-        foreach ($data as $key => $value) {
-            $total += $value->total_harga;
+        $model = new PengeluaranModel();
+        $modelDetail = new DetailPengeluaran();
+        $modelImages = new PengeluaranImages();
+        $data = $model->where('id', $id)->first();
+        $detail = $modelDetail->where('pengeluaran_id', $id)->get();
+        $total_harga = $modelDetail->where('pengeluaran_id', $id)->sum('total_harga');
+        $struk = $modelImages->where('pengeluaran_id', $id)->pluck('image_path');
+        $image_path = $struk->first();
+        // dd($image_path);
+
+        // check if struk is empty
+        if ($struk->isEmpty()) {
+            $struk = null;
         }
-        return view('bendahara.pengeluaran.detail', compact('data', 'pengeluaran', 'total'));
+        // dd($data);
+        return view('bendahara.pengeluaran.detail', compact('data', 'detail', 'total_harga', 'struk', 'image_path'));
+    }
+
+    public function laporanKeuangan()
+    {
+        $model = new LaporanKeuangan();
+        $data = $model->getLaporanKeuangan();
+        // dd($data);
+        return view('bendahara.laporan.index', compact('data'));
+    }
+
+    public function cetakLaporan()
+    {
+        $model = new LaporanKeuangan();
+        $data = $model->getLaporanKeuangan();
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set header
+        $sheet->setCellValue('A1', 'Tanggal');
+        $sheet->setCellValue('B1', 'Keterangan');
+        $sheet->setCellValue('C1', 'Pemasukan');
+        $sheet->setCellValue('D1', 'Pengeluaran');
+        $sheet->setCellValue('E1', 'Saldo Akhir');
+
+        // Apply styling to header
+        $headerStyleArray = [
+            'font' => [
+                'bold' => true,
+                'color' => ['argb' => 'FFFFFFFF'],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF0000FF'],
+            ],
+        ];
+        $sheet->getStyle('A1:E1')->applyFromArray($headerStyleArray);
+
+        // Populate data
+        $row = 2;
+        foreach ($data as $item) {
+            $sheet->setCellValue('A' . $row, $item->tanggal);
+            $sheet->setCellValue('B' . $row, $item->keterangan);
+            $sheet->setCellValue('C' . $row, $item->pemasukan);
+            $sheet->setCellValue('D' . $row, $item->pengeluaran);
+            $sheet->setCellValue('E' . $row, $item->saldo_akhir);
+            $row++;
+        }
+
+        // Apply styling to data rows
+        $dataStyleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+        $sheet->getStyle('A2:E' . ($row - 1))->applyFromArray($dataStyleArray);
+
+        // Auto size columns
+        foreach (range('A', 'E') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        // Write to file
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $fileName = 'Laporan_Keuangan_' . date('Ymd_His') . '.xlsx';
+        $filePath = public_path('exports/' . $fileName);
+        if (!file_exists(public_path('exports'))) {
+            mkdir(public_path('exports'), 0777, true);
+        }
+
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+        $writer->save($filePath);
+
+        return response()->download($filePath)->deleteFileAfterSend(true);
+    }
+
+    public function pengajuanDana()
+    {
+        $model = new PengajuanDanaModel();
+        $data = $model->getDataPengajuan();
+        return view('bendahara.pengajuan.index', compact('data'));
+    }
+
+    public function showPengajuanDana($id)
+    {
+        $model = new PengajuanDanaModel();
+        $data = $model->getDataPengajuanById($id);
+        $modelAccount = new DetailAccountModel();
+        $account = $modelAccount->getSaldo();
+        // dd( $data);
+        $detail = $model->getDetailPengajuanById($id);
+        $total_harga = $detail->sum('total_harga');
+        return view('bendahara.pengajuan.show', compact('data', 'detail', 'total_harga', 'account'));
+    }
+
+    public function verifikasiPengajuanDana(Request $request, $id)
+    {
+        $model = new PengajuanDanaModel();
+        $modelDetailPengajuan = new DetailPengajuanModel();
+        $modelDetailPengeluaran = new DetailPengeluaran();
+        $request->verifikasi_pimpinan;
+        // dd($request->all());
+        $data = $model->find($id);
+        if ($data->verifikasi_pimpinan == 'disetujui') {
+            $data->verifikasi_bendahara = $request->verifikasi_bendahara;
+            $data->keterangan_verifikasi_bendahara = $request->keterangan_verifikasi;
+
+            $pengeluaran = new PengeluaranModel();
+            $pengeluaran->tanggal = date('Y-m-d');
+            $pengeluaran->id_detail_account = $request->account;
+            $pengeluaran->jenis_pengeluaran = $data->tujuan_pengajuan;
+            $pengeluaran->keterangan = $data->keterangan_pengajuan;
+            $pengeluaran->id_penginput = $data->id_user;
+            $pengeluaran->save();
+
+            $id_pengeluaran = $pengeluaran->id;
+
+            $detail = $modelDetailPengajuan->where('pengajuan_dana_id', $id)->get();
+            foreach ($detail as $key => $value) {
+                $modelDetailPengeluaran->create([
+                    'pengeluaran_id' => $id_pengeluaran,
+                    'item' => $value->item,
+                    'jumlah' => $value->jumlah,
+                    'satuan' => $value->satuan,
+                    'harga_satuan' => $value->harga_satuan,
+                    'total_harga' => $value->total_harga,
+                ]);
+            }
+
+            $modelLaporan = new LaporanKeuangan();
+            $modelLaporan->tanggal = date('Y-m-d');
+            $modelLaporan->keterangan = $data->tujuan_pengajuan;
+            $modelLaporan->pengeluaran = $detail->sum('total_harga'); // Pengeluaran
+            $modelLaporan->pemasukan = 0; // Pemasukan
+            $saldo_akhir = $modelLaporan->getSaldoAkhir();
+            $modelLaporan->saldo_akhir = $saldo_akhir->saldo_akhir - $detail->sum('total_harga'); // Saldo
+            $modelLaporan->save();
+
+            
+        } else {
+            $data->verifikasi_pimpinan = $request->verifikasi_pimpinan;
+            $data->keterangan_verifikasi_pimpinan = $request->keterangan_verifikasi;
+        }
+        $data->save();
+
+        return redirect()->route('keuangan.pengajuan_dana.show', $id)->with('success', 'Pengajuan dana berhasil diverifikasi');
     }
 }

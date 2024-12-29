@@ -37,6 +37,23 @@
 
                         <div class="row mb-3">
                             <div class="col-lg-3">
+                                <label for="detail_account" class="form-label">Detail Account</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select class="form-control" data-choices data-choices-search="true" name="id_detail_account" id="choices-single-default">
+                                    <option value="">Pilih Akun</option>
+                                    @foreach ($detailAccount as $item)
+                                    <option value="{{ $item->id }}" {{ old('id_detail_account') == $item->id ? 'selected' : '' }}>{{ $item->kode_akun . ' | ' . $item->nama_akun }}</option>
+                                    @endforeach
+                                </select>
+                                @error('id_detail_account')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-lg-3">
                                 <label for="sumber" class="form-label">Jenis Pengeluaran</label>
                             </div>
                             <div class="col-lg-9">

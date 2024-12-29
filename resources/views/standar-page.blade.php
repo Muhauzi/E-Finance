@@ -13,8 +13,10 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h4 class="card-title mb-4">Selamat Datang!</h4>
+                </div>
+                <div class="card-body">
                     <p class="card-text">Selamat datang di Starter, sebuah aplikasi web yang dibangun dengan Laravel 11 dan Bootstrap 5. Starter adalah aplikasi web yang dapat membantu Anda dalam membangun aplikasi web yang lebih kompleks.</p>
                     <p class="card-text">Silakan jelajahi aplikasi ini dan jangan ragu untuk menghubungi kami jika Anda memiliki pertanyaan.</p>
                 </div>

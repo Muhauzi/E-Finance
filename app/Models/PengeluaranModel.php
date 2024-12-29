@@ -38,6 +38,11 @@ class PengeluaranModel extends Model
         return $this->hasMany(PengeluaranImages::class, 'pengeluaran_id', 'id');
     }
 
+    public function detailAccount()
+    {
+        return $this->belongsTo(DetailAccountModel::class, 'id_detail_account', 'id');
+    }
+
     public function getTotalPengeluaranBulanan()
     {
         $bulan = [
@@ -56,8 +61,13 @@ class PengeluaranModel extends Model
 
     public function getTotalPengeluaran($id_detail_account)
     {
-        return $this->join('pengeluaran', 'detail_pengeluaran.pengeluaran_id', '=', 'pengeluaran.id')
-            ->where('pengeluaran.id_penginput', $id_detail_account)
-            ->sum('total_harga');
+        return $this->join('detail_pengeluaran', 'pengeluaran.id', '=', 'detail_pengeluaran.pengeluaran_id')
+            ->where('pengeluaran.id_detail_account', $id_detail_account)
+            ->sum('detail_pengeluaran.total_harga');
     }
+
+    public function getPengeluaranByAccount($id_detail_account)
+    {
+        return $this->where('id_detail_account', $id_detail_account)->get();
+    }   
 }

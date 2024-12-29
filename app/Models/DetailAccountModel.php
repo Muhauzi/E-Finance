@@ -16,4 +16,11 @@ class DetailAccountModel extends Model
         'keterangan',
     ];
     public $timestamps = true;
+
+    public function getSaldo()
+    {
+        return $this->join('saldo', 'detail_account.id', '=', 'saldo.detail_account_id')
+            ->select('detail_account.*', 'saldo.nominal')
+            ->get();
+    }
 }

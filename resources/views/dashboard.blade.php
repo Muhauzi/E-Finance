@@ -46,11 +46,11 @@
                         </div>
                         <div class="flex-grow-1 overflow-hidden ms-3">
                             <p class="text-uppercase fw-medium text-muted text-truncate mb-3">
-                                Saldo Awal Dari {{$saldo_awal->nama_akun}}</p>
+                                Saldo Awal Dari {{$saldo_awal->nama_akun ?? '-'}}</p>
                             <div class="d-flex align-items-center mb-3">
                                 <h4 class="fs-4 flex-grow-1 mb-0">Rp. <span class="counter-value"
-                                        data-target="{{$saldo_awal->nominal}}">
-                                        {{ number_format($saldo_awal->nominal, 0, ',', '.') }}
+                                        data-target="{{$saldo_awal->nominal ?? '-'}}">
+                                        {{ isset($saldo_awal->nominal) ? number_format($saldo_awal->nominal, 0, ',', '.') : '-' }}
                                     </span></h4>
                             </div>
                         </div>

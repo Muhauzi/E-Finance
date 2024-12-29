@@ -72,7 +72,7 @@
                             <div class="col-lg-9">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text">Rp.</span>
-                                    <input type="text" class="form-control" name="nominal" aria-label="Satuan Rupiah" value="{{ old('nominal') }}">
+                                    <input type="number" class="form-control" name="nominal" aria-label="Satuan Rupiah" value="{{ old('nominal') }}">
                                 </div>
                                 @error('nominal')
                                     <div class="text-danger">{{ $message }}</div>

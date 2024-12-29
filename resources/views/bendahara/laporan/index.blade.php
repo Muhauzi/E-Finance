@@ -1,5 +1,5 @@
 <x-app-layout>
-<x-page-title>
+    <x-page-title>
         <h4 class="mb-sm-0">Laporan Keuangan</h4>
         <div class="page-title-right">
             <ol class="breadcrumb m-0">
@@ -14,6 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title mb-0">Laporan</h4>
+
                 </div><!-- end card header -->
 
                 <div class="card-body">
@@ -21,15 +22,21 @@
                         <div class="row g-4 mb-3">
                             <div class="col-sm-auto">
                                 <div>
-                                    <div class="search-box ms-2">
-                                        <input type="text" class="form-control search" placeholder="Search...">
-                                        <i class="ri-search-line search-icon"></i>
-                                    </div>
+                                    <form id="filterForm" method="GET">
+                                        <div class="input-group">
+                                            <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Filter by Date" value="{{ request('tanggal') }}">
+                                            <button type="button" id="filterBtn" class="btn btn-primary">Filter</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                             <div class="col-sm">
                                 <div class="d-flex justify-content-sm-end">
-                                    <a href="{{ route('admin.detail_account.create')}}" type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Input Detail Account</a>
+                                    <!-- cetak laporan btn -->
+                                    <a href="{{ route('keuangan.laporan.cetak') }}" class="btn btn-primary">
+                                        <i class="ri-printer-line me-1"></i>
+                                        Cetak Laporan
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -38,29 +45,23 @@
                             <table class="table align-middle table-nowrap" id="customerTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="sort" data-sort="kode_akun">Kode Akun</th>
-                                        <th class="sort" data-sort="nama_akun">Nama Akun</th>
+                                        <th class="sort" data-sort="tanggal">Tanggal</th>
                                         <th class="sort" data-sort="keterangan">Keterangan</th>
+                                        <th class="sort text-center" data-sort="Pengeluaran">Pengeluaran</th>
+                                        <th class="sort text-center" data-sort="Pemasukan">Pemasukan</th>
+                                        <th class="sort text-center" data-sort="Saldo-Akhir">Saldo Akhir</th>
                                         <th class="sort"></th>
                                     </tr>
                                 </thead>
-                                <tbody class="list form-check-all">
+                                <tbody class="list form-check-all" id="tableBody">
                                     @foreach ($data as $key => $item)
                                     <tr>
-                                        <td class="kode_akun">{{ $item->kode_akun }}</td>
-                                        <td class="nama_akun">{{ $item->nama_akun }}</td>
+                                        <td class="tanggal">{{ $item->tanggal }}</td>
                                         <td class="keterangan">{{ $item->keterangan }}</td>
-                                        <td class="aksi">
-                                            <a href="{{ route('admin.detail_account.edit', $item->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="ri-pencil-fill me-1"></i></a>
-                                            <form action="{{ route('admin.detail_account.destroy', $item->id) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger"><i class="ri-delete-bin-6-fill me-1"></i></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    @endforeach
+                                        <td class="Pengeluaran text-center"><strong>{{ $item->pengeluaran == 0 ? '-' : 'Rp. ' . number_format($item->pengeluaran, 0, ',', '.') . ',-' }}</strong></td>
+                                        <td class="Pemasukan text-center"><strong>{{ $item->pemasukan == 0 ? '-' : 'Rp. ' . number_format($item->pemasukan, 0, ',', '.') . ',-'  }}</strong></td>
+                                        <td class="Saldo-Akhir text-center"><strong>Rp. {{ number_format($item->saldo_akhir, 0, ',', '.') }},-</strong></td>
+                                        @endforeach
                                 </tbody>
                             </table>
                             <div class="noresult" style="display: none">
@@ -92,7 +93,36 @@
             <!-- end col -->
         </div>
         <x-confirm-alert></x-confirm-alert>
-            <x-alert></x-alert>
+        <x-alert></x-alert>
         <!-- end col -->
     </div>
+
+    <script>
+        document.getElementById('filterBtn').addEventListener('click', function() {
+            const filterDate = document.getElementById('tanggal').value; // Ambil nilai input tanggal
+            const rows = document.querySelectorAll('#tableBody tr'); // Ambil semua baris tabel
+
+            if (!filterDate) {
+                alert("Harap masukkan tanggal untuk memfilter!");
+                return;
+            }
+
+            let hasData = false;
+
+            rows.forEach(row => {
+                const rowDate = row.getAttribute('data-tanggal'); // Ambil atribut tanggal dari setiap baris
+
+                if (rowDate === filterDate) {
+                    row.style.display = ''; // Tampilkan baris jika tanggal sesuai
+                    hasData = true;
+                } else {
+                    row.style.display = 'none'; // Sembunyikan baris yang tidak sesuai
+                }
+            });
+
+            if (!hasData) {
+                alert(`Tidak ada data ditemukan untuk tanggal ${filterDate}`);
+            }
+        });
+    </script>
 </x-app-layout>

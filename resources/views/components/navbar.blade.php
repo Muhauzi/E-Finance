@@ -106,8 +106,25 @@
                                     Uang Keluar
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.laporan') }}" class="nav-link" data-key="t-level-2.4">
+                                    Laporan
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.pengajuan_dana') }}" class="nav-link menu-link">
+                                    <span data-key="t-dashboards">Pengajuan Dana</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('karyawan.pengajuan') }}" class="nav-link menu-link">
+                        <i class="ri-file-list-3-line"></i>
+                        <span data-key="t-dashboards">Pengajuan Dana</span>
+                    </a>
                 </li>
 
                 <li class="nav-item">

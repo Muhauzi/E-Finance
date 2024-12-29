@@ -14,4 +14,9 @@ class PengeluaranImages extends Model
     {
         return $this->belongsTo(PengeluaranModel::class, 'pengeluaran_id', 'id');
     }
+    
+    public function getImagePath($id)
+    {
+        return $this->where('pengeluaran_id', $id)->get();
+    }
 }

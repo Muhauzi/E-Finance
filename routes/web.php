@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KaryawanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -50,7 +51,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 
-Route::prefix('keuangan')->name('keuangan.')->group(function () {
+Route::prefix('keuangan')->name('keuangan.')->middleware('auth')->group(function () {
     Route::get('/saldo', [BendaharaController::class, 'saldo'])->name('saldo');
     Route::get('/saldo/create', [BendaharaController::class, 'tambahSaldo'])->name('saldo.create');
     Route::post('/saldo/store', [BendaharaController::class, 'simpanSaldo'])->name('saldo.store');
@@ -67,6 +68,20 @@ Route::prefix('keuangan')->name('keuangan.')->group(function () {
     Route::post('/pengeluaran/store_detail', [BendaharaController::class, 'storeDetailPengeluaran'])->name('pengeluaran.store_detail');
     Route::post('/pengeluaran/upload_struk', [BendaharaController::class, 'uploadStruk'])->name('pengeluaran.upload_struk');
     Route::get('/pengeluaran/detail/{id}', [BendaharaController::class, 'detailPengeluaran'])->name('pengeluaran.detail');
+    Route::get('/laporan', [BendaharaController::class, 'laporanKeuangan'])->name('laporan');
+    Route::get('/laporan/cetak', [BendaharaController::class, 'cetakLaporan'])->name('laporan.cetak');
+    Route::get('/pengajuan_dana', [BendaharaController::class, 'pengajuanDana'])->name('pengajuan_dana');
+    Route::get('/pengajuan_dana/show/{id}', [BendaharaController::class, 'showPengajuanDana'])->name('pengajuan_dana.show');
+    Route::post('/pengajuan_dana/verifikasi/{id}', [BendaharaController::class, 'verifikasiPengajuanDana'])->name('pengajuan_dana.verifikasi');
+});
+
+Route::prefix('karyawan')->name('karyawan.')->middleware('auth')->group(function () {
+    Route::get('/pengajuan', [KaryawanController::class, 'pengajuan'])->name('pengajuan');
+    Route::get('/pengajuan/create', [KaryawanController::class, 'createPengajuan'])->name('pengajuan.create');
+    Route::post('/pengajuan/store', [KaryawanController::class, 'storePengajuan'])->name('pengajuan.store');
+    Route::get('/pengajuan/create_detail/{id}', [KaryawanController::class, 'createDetailPengajuan'])->name('pengajuan.create_detail');
+    Route::post('/pengajuan/store_detail', [KaryawanController::class, 'storeDetailPengajuan'])->name('pengajuan.store_detail');
+    Route::get('/pengajuan/show/{id}', [KaryawanController::class, 'showPengajuan'])->name('pengajuan.show');
 });
 
 Route::get('/dashboard', [BendaharaController::class, 'index'])->name('dashboard');

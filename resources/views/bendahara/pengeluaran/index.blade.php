@@ -68,6 +68,11 @@
                                             </button>
                                             @endif
                                         </td>
+                                        <td class="aksi">
+                                            <a href="{{ route('keuangan.pengeluaran.detail', $item->id) }}" class="btn btn-warning btn-sm">
+                                                <i class="ri-eye-line align-middle me-1"></i>
+                                                Detail
+                                            </a>
                                         @endforeach
                                 </tbody>
                             </table>

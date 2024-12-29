@@ -116,9 +116,9 @@
                                     class="dropdown-item notify-item py-2">
                                     <div class="d-flex">
                                         <img
-                                            src="{{ public_path('assets/images/users/avatar-2.jpg') }}"
+                                            src=""
                                             class="me-3 rounded-circle avatar-xs"
-                                            alt="user-pic" />
+                                            alt="user-pic"/>
                                         <div class="flex-1">
                                             <h6 class="m-0">Angela Bernier</h6>
                                             <span class="fs-11 mb-0 text-muted">Manager</span>
@@ -131,7 +131,7 @@
                                     class="dropdown-item notify-item py-2">
                                     <div class="d-flex">
                                         <img
-                                            src="assets/images/users/avatar-3.jpg"
+                                            src=""
                                             class="me-3 rounded-circle avatar-xs"
                                             alt="user-pic" />
                                         <div class="flex-1">
@@ -146,7 +146,7 @@
                                     class="dropdown-item notify-item py-2">
                                     <div class="d-flex">
                                         <img
-                                            src="assets/images/users/avatar-5.jpg"
+                                            src=""
                                             class="me-3 rounded-circle avatar-xs"
                                             alt="user-pic" />
                                         <div class="flex-1">
@@ -228,7 +228,7 @@
                                 <div class="col">
                                     <a class="dropdown-icon-item" href="#!">
                                         <img
-                                            src="assets/images/brands/github.png"
+                                            src=""
                                             alt="Github" />
                                         <span>GitHub</span>
                                     </a>
@@ -236,7 +236,7 @@
                                 <div class="col">
                                     <a class="dropdown-icon-item" href="#!">
                                         <img
-                                            src="assets/images/brands/bitbucket.png"
+                                            src=""
                                             alt="bitbucket" />
                                         <span>Bitbucket</span>
                                     </a>
@@ -244,7 +244,7 @@
                                 <div class="col">
                                     <a class="dropdown-icon-item" href="#!">
                                         <img
-                                            src="assets/images/brands/dribbble.png"
+                                            src=""
                                             alt="dribbble" />
                                         <span>Dribbble</span>
                                     </a>
@@ -255,7 +255,7 @@
                                 <div class="col">
                                     <a class="dropdown-icon-item" href="#!">
                                         <img
-                                            src="assets/images/brands/dropbox.png"
+                                            src=""
                                             alt="dropbox" />
                                         <span>Dropbox</span>
                                     </a>
@@ -263,7 +263,7 @@
                                 <div class="col">
                                     <a class="dropdown-icon-item" href="#!">
                                         <img
-                                            src="assets/images/brands/mail_chimp.png"
+                                            src=""
                                             alt="mail_chimp" />
                                         <span>Mail Chimp</span>
                                     </a>
@@ -271,7 +271,7 @@
                                 <div class="col">
                                     <a class="dropdown-icon-item" href="#!">
                                         <img
-                                            src="assets/images/brands/slack.png"
+                                            src=""
                                             alt="slack" />
                                         <span>Slack</span>
                                     </a>
@@ -324,7 +324,7 @@
                                     class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                     <div class="d-flex align-items-center">
                                         <img
-                                            src="assets/images/products/img-1.png"
+                                            src=""
                                             class="me-3 rounded-circle avatar-sm p-2 bg-light"
                                             alt="user-pic" />
                                         <div class="flex-1">
@@ -532,7 +532,7 @@
                                         class="text-reset notification-item d-block dropdown-item">
                                         <div class="d-flex">
                                             <img
-                                                src="assets/images/users/avatar-3.jpg"
+                                                src=""
                                                 class="me-3 rounded-circle avatar-xs"
                                                 alt="user-pic" />
                                             <div class="flex-1">
@@ -584,7 +584,7 @@
                                 aria-labelledby="alerts-tab">
                                 <div class="w-25 w-sm-50 pt-3 mx-auto">
                                     <img
-                                        src="assets/images/svg/bell.svg"
+                                        src=""
                                         class="img-fluid"
                                         alt="user-pic" />
                                 </div>
