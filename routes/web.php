@@ -29,7 +29,7 @@ Route::get('/account/create', function () {
     return view('account.create');
 })->name('account.create');
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
     Route::get('/pegawai', [AdminController::class, 'pegawai'])->name('pegawai');
     Route::get('/pegawai/create', [AdminController::class, 'tambahPegawai'])->name('pegawai.create');
     Route::post('/pegawai/store', [AdminController::class, 'simpanPegawai'])->name('pegawai.store');
@@ -51,7 +51,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 
-Route::prefix('keuangan')->name('keuangan.')->middleware('auth')->group(function () {
+Route::prefix('keuangan')->name('keuangan.')->middleware('auth', 'verified', 'bendahara')->group(function () {
     Route::get('/saldo', [BendaharaController::class, 'saldo'])->name('saldo');
     Route::get('/saldo/create', [BendaharaController::class, 'tambahSaldo'])->name('saldo.create');
     Route::post('/saldo/store', [BendaharaController::class, 'simpanSaldo'])->name('saldo.store');
@@ -75,7 +75,7 @@ Route::prefix('keuangan')->name('keuangan.')->middleware('auth')->group(function
     Route::post('/pengajuan_dana/verifikasi/{id}', [BendaharaController::class, 'verifikasiPengajuanDana'])->name('pengajuan_dana.verifikasi');
 });
 
-Route::prefix('karyawan')->name('karyawan.')->middleware('auth')->group(function () {
+Route::prefix('karyawan')->name('karyawan.')->middleware('auth', 'karyawan')->group(function () {
     Route::get('/pengajuan', [KaryawanController::class, 'pengajuan'])->name('pengajuan');
     Route::get('/pengajuan/create', [KaryawanController::class, 'createPengajuan'])->name('pengajuan.create');
     Route::post('/pengajuan/store', [KaryawanController::class, 'storePengajuan'])->name('pengajuan.store');
