@@ -62,9 +62,15 @@
                                     <a href="{{ route('karyawan.pengajuan.show', $item->id) }}" class="btn btn-sm btn-primary">
                                         <i class="ri-eye-line align-bottom me-1"></i> Detail
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#uploadLaporanModal{{ $item->id }}" {{ ($item->verifikasi_pimpinan == 'pending' || $item->verifikasi_pimpinan == 'ditolak' || $item->verifikasi_bendahara == 'pending' || $item->verifikasi_bendahara== 'ditolak') ? 'disabled' : '' }}>
+                                    @if ($item->laporan)
+                                    <a href="{{ asset('uploads/laporan_pengajuan/' . $item->laporan) }}" class="btn btn-sm btn-success" download>
+                                        <i class="ri-download-2-line align-bottom me-1"></i> Download Laporan Pengajuan
+                                    </a>
+                                    @else
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#uploadLaporanModal{{ $item->id }}">
                                         <i class="ri-upload-2-line align-bottom me-1"></i> Upload Laporan Pengajuan
                                     </button>
+                                    @endif
 
                                     <!-- Modal -->
                                     <div class="modal fade" id="uploadLaporanModal{{ $item->id }}" tabindex="-1" aria-labelledby="uploadLaporanModalLabel{{ $item->id }}" aria-hidden="true">
@@ -75,11 +81,12 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form action="{{ route('karyawan.pengajuan.upload_laporan', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                                    <form action="{{ route('karyawan.pengajuan.upload_laporan') }}" method="POST" enctype="multipart/form-data">
                                                         @csrf
+                                                        <input type="hidden" name="id_pengajuan" value="{{ $item->id }}">
                                                         <div class="mb-3">
                                                             <label for="laporan" class="form-label">Laporan</label>
-                                                            <input type="file" class="form-control" id="laporan" name="laporan" required>
+                                                            <input type="file" class="form-control" id="laporan" name="file" required>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -82,7 +82,7 @@ Route::prefix('karyawan')->name('karyawan.')->middleware('auth', 'karyawan')->gr
     Route::get('/pengajuan/create_detail/{id}', [KaryawanController::class, 'createDetailPengajuan'])->name('pengajuan.create_detail');
     Route::post('/pengajuan/store_detail', [KaryawanController::class, 'storeDetailPengajuan'])->name('pengajuan.store_detail');
     Route::get('/pengajuan/show/{id}', [KaryawanController::class, 'showPengajuan'])->name('pengajuan.show');
-    Route::get('/pengajuan/upload_laporan/{id}', [KaryawanController::class, 'uploadLaporan'])->name('pengajuan.upload_laporan');
+    Route::post('/pengajuan/upload_laporan', [KaryawanController::class, 'uploadLaporan'])->name('pengajuan.upload_laporan');
 });
 
 Route::prefix('pimpinan')->name('pimpinan.')->middleware('auth', 'pimpinan')->group(function () {

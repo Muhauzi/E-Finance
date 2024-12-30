@@ -48,4 +48,12 @@ class PengajuanDanaModel extends Model
             ->where('pengajuan_dana.id', $id)
             ->get();
     }
+
+    public function getLaporan($id)
+    {
+        return $this->join('laporan_pengajuan', 'pengajuan_dana.id', '=', 'laporan_pengajuan.id_pengajuan')
+            ->select('laporan_pengajuan.file_laporan')
+            ->where('pengajuan_dana.id', $id)
+            ->first();
+    }
 }

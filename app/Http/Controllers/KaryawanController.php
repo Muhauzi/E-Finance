@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailPengajuanModel;
+use App\Models\LaporanPengajuanModel;
 use Illuminate\Http\Request;
 use App\Models\PengajuanDanaModel;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,17 @@ class KaryawanController extends Controller
         $model = new PengajuanDanaModel();
 
         $data = $model->getDataPengajuan();
+
+        foreach($data as $key => $value) {
+            $laporan = $model->getLaporan($value->id);
+            if ($laporan && $laporan->file_laporan) {
+                $data[$key]->laporan = $laporan->file_laporan;
+            } else {
+                $data[$key]->laporan = false;
+            }
+        }
+
+        // dd( $data );
 
         return view('pengajuan.index', compact('data'));
     }
@@ -79,5 +91,23 @@ class KaryawanController extends Controller
         return redirect()->route('karyawan.pengajuan')->with('success', 'Pengajuan Berhasil Dibuat');
     }
 
+    public function uploadLaporan(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:pdf|max:2048',
+        ]);
+
+        $model = new LaporanPengajuanModel();
+
+        $file = $request->file('file');
+        $file_name = time() . "_" . $file->getClientOriginalName();
+        $file->move('uploads/laporan_pengajuan', $file_name);
+
+        $model->id_pengajuan = $request->id_pengajuan;
+        $model->file_laporan = $file_name;
+        $model->save();
+
+        return redirect()->route('karyawan.pengajuan')->with('success', 'Laporan Berhasil Diupload');
+    }
 
 }
