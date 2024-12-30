@@ -99,6 +99,8 @@ class KaryawanController extends Controller
         $detail = $model->getDetailPengajuanById($id);
         $total_harga = $detail->sum('total_harga'); 
 
+        $data->laporan = $model->getLaporan($id)->file_laporan;
+
         return view('pengajuan.show', compact('data', 'detail', 'total_harga'));
     }
 

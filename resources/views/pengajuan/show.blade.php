@@ -16,7 +16,7 @@
                 <div class="card-header">
                     <div class="card-title mb-0">
                         <h4>Detail Pengajuan Dana</h4>
-                        <a href="{{ route('keuangan.pengajuan_dana') }}" class="btn btn-danger" style="float: right;">
+                        <a href="{{ route('karyawan.pengajuan') }}" class="btn btn-danger" style="float: right;">
                             <i class="ri-arrow-left-line align-middle me-1"></i>
                             Kembali
                         </a>
@@ -61,6 +61,20 @@
                                             {{ $data->keterangan_pengajuan }}
                                         </td>
                                     </tr>
+
+                                    <tr>
+                                        <td>
+                                            <label for="laporan_pj" class="form-label">Laporan Pertanggungjawaban</label>
+                                        </td>
+                                        <td>
+                                            @if ($data->laporan)
+                                            <a href="{{ asset('uploads/laporan_pengajuan/' . $data->laporan) }}" class="btn btn-sm btn-success" download>
+                                                <i class="ri-download-2-line align-bottom me-1"></i> Download Laporan Pertanggungjawaban
+                                            </a>
+                                            @else
+                                            <button class="btn btn-danger">Belum ada laporan pertanggungjawaban</button>
+                                            @endif
+                                        </td>
                                 </table>
                             </div>
                             <div class="col-lg-6">
