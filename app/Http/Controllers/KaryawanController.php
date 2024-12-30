@@ -91,6 +91,17 @@ class KaryawanController extends Controller
         return redirect()->route('karyawan.pengajuan')->with('success', 'Pengajuan Berhasil Dibuat');
     }
 
+    public function showPengajuan($id)
+    {
+        $model = new PengajuanDanaModel();
+
+        $data = $model->getDataPengajuanById($id);
+        $detail = $model->getDetailPengajuanById($id);
+        $total_harga = $detail->sum('total_harga'); 
+
+        return view('pengajuan.show', compact('data', 'detail', 'total_harga'));
+    }
+
     public function uploadLaporan(Request $request)
     {
         $request->validate([
