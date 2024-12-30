@@ -113,51 +113,53 @@
                     <table class="table align-middle table-nowrap mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">Student</th>
-                                <th scope="col">Course</th>
-                                <th scope="col">Author</th>
-                                <th scope="col">Payment</th>
-                                <th scope="col">Process</th>
-                                <th scope="col">Status</th>
+                                <th>Nama</th>
+                                <th>Nama Akun</th>
+                                <th>Tujuan Pengajuan</th>
+                                <th>Nominal</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($pengajuan as $item)
                             <tr>
-                                <td>Milana Scot</td>
-                                <td>UI/UX design</td>
-                                <td>Mitchell Flores</td>
-                                <td>$450</td>
                                 <td>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-xs me-3">
+                                            <img src="{{ asset('assets/images/users/avatar-1.jpg') }}"
+                                                class="img-fluid rounded-circle" alt="...">
+                                        </div>
+                                        <h5 class="mb-0">{{$item->nama}}</h5>
                                     </div>
                                 </td>
-                                <td><a href="javascript:void(0);" class="link-success">Confirmed</a></td>
-                            </tr>
-                            <tr>
-                                <td>Jassica Welsh</td>
-                                <td>3d Animation</td>
-                                <td>Dan Evgeni</td>
-                                <td>$860</td>
                                 <td>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                                    <h5 class="mb-0">{{$item->nama_akun}}</h5>
                                 </td>
-                                <td><a href="javascript:void(0);" class="link-warning">Waiting</a></td>
-                            </tr>
-                            <tr>
-                                <td>Leslie Alexander</td>
-                                <td>Logotype Design</td>
-                                <td>Olimpia Jordan</td>
-                                <td>$450</td>
                                 <td>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                                    <h5 class="mb-0">{{$item->tujuan_pengajuan}}</h5>
                                 </td>
-                                <td><a href="javascript:void(0);" class="link-warning">Waiting</a></td>
+                                <td>
+                                    <h5 class="mb-0">Rp. {{number_format($item->nominal_pengajuan, 0, ',', '.')}}</h5>
+                                </td>
+                                <td>
+                                    <h5 class="mb-0">{{$item->created_at}}</h5>
+                                </td>
+                                <td>
+                                    <h5 class="mb-0">
+                                        @if ($item->verifikasi_pimpinan == 'pending' && $item->verifikasi_bendahara == 'pending')
+                                            <span class="badge bg-soft-warning text-warning">Pending (25%)</span>
+                                        @elseif ($item->verifikasi_pimpinan == 'disetujui')
+                                            <span class="badge bg-soft-info text-info">In Progress (50%)</span>
+                                        @elseif ( $item->verifikasi_bendahara == 'disetujui')
+                                            <span class="badge bg-soft-success text-success">Approved (100%)</span>
+                                        @else
+                                            <span class="badge bg-soft-danger text-danger">Rejected</span>
+                                        @endif
+                                    </h5>
+                                </td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

@@ -55,9 +55,11 @@
                                     @endif                                    
                                 </td>
                                 <td>
-                                    <a href="{{ route('keuangan.pengajuan_dana.show', $item->id) }}" class="btn btn-sm btn-primary">
-                                        <i class="ri-eye-line align-bottom me-1"></i> Detail
-                                    </a>
+                                    @if (Auth::user()->role == 'Pimpinan')
+                                    <a href="{{ route('pimpinan.pengajuan_dana.show', $item->id) }}" class="btn btn-primary">Detail</a>
+                                    @elseif (Auth::user()->role == 'Bendahara')
+                                    <a href="{{ route('keuangan.pengajuan_dana.show', $item->id) }}" class="btn btn-primary">Detail</a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

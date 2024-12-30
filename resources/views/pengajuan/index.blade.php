@@ -24,7 +24,7 @@
                     </div>
                     <table class="table table-responsive">
                         <thead>
-                            <tr>
+                            <tr class="text-center">
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Tujuan Pengajuan</th>
@@ -36,7 +36,8 @@
                         </thead>
                         <tbody>
                             @foreach ($data as $key => $item)
-                            <tr>
+                            @if ($item->id_user == Auth::user()->id)
+                            <tr class="text-center">
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $item->tanggal_pengajuan }}</td>
                                 <td>{{ $item->tujuan_pengajuan }}</td>
@@ -55,14 +56,43 @@
                                     <span class="badge bg-success">Disetujui</span>
                                     @else
                                     <span class="badge bg-danger">Ditolak</span>
-                                    @endif                                    
+                                    @endif
                                 </td>
                                 <td>
                                     <a href="{{ route('karyawan.pengajuan.show', $item->id) }}" class="btn btn-sm btn-primary">
                                         <i class="ri-eye-line align-bottom me-1"></i> Detail
                                     </a>
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#uploadLaporanModal{{ $item->id }}" {{ ($item->verifikasi_pimpinan == 'pending' || $item->verifikasi_pimpinan == 'ditolak' || $item->verifikasi_bendahara == 'pending' || $item->verifikasi_bendahara== 'ditolak') ? 'disabled' : '' }}>
+                                        <i class="ri-upload-2-line align-bottom me-1"></i> Upload Laporan Pengajuan
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="uploadLaporanModal{{ $item->id }}" tabindex="-1" aria-labelledby="uploadLaporanModalLabel{{ $item->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="uploadLaporanModalLabel{{ $item->id }}">Upload Laporan Pengajuan</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('karyawan.pengajuan.upload_laporan', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="mb-3">
+                                                            <label for="laporan" class="form-label">Laporan</label>
+                                                            <input type="file" class="form-control" id="laporan" name="laporan" required>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Upload</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
+                            @endif
                             @endforeach
                         </tbody>
                     </table>

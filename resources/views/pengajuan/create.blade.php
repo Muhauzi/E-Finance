@@ -30,14 +30,6 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="nominal" class="form-label">Nominal</label>
-                                <input type="number" class="form-control" name="nominal" value="{{ old('nominal') }}">
-                                @error('nominal')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
                                 <label for="tanggal" class="form-label">Tanggal</label>
                                 <input type="date" class="form-control" name="tanggal" value="{{ old('tanggal') }}">
                                 @error('tanggal')

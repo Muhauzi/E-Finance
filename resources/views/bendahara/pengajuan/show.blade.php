@@ -71,7 +71,7 @@
                                         </td>
                                         <td>
                                             @if (Auth::user()->role == 'Pimpinan' && $data->verifikasi_pimpinan == 'pending')
-                                            <form action="{{ route('keuangan.pengajuan_dana.verifikasi', $data->id) }}" method="POST">
+                                            <form action="{{ route('pimpinan.pengajuan_dana.verifikasi', $data->id) }}" method="POST">
                                                 @csrf
                                                 @method('POST')
                                                 <textarea name="keterangan_verifikasi" class="form-control mb-3" placeholder="Keterangan Verifikasi" required></textarea>

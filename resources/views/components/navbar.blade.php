@@ -42,6 +42,7 @@
                     </a>
                 </li>
 
+                @if (Auth::user()->role == 'Administrator')
                 <li class="nav-item">
                     <a
                         class="nav-link menu-link"
@@ -77,6 +78,17 @@
                         </ul>
                     </div>
                 </li>
+                @endif
+
+                @if (Auth::user()->role == 'Pimpinan')
+                <li class="nav-item">
+                    <a href="{{ route('pimpinan.pengajuan_dana') }}" class="nav-link menu-link">
+                        <i class="ri-file-list-3-line"></i>
+                        <span data-key="t-dashboards">Pengajuan Dana</span>
+                    </a>
+                </li>
+                @endif
+
 
                 @if (Auth::user()->role == 'Bendahara')
                 <li class="nav-item">

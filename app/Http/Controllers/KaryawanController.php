@@ -29,6 +29,7 @@ class KaryawanController extends Controller
 
         $model->tujuan_pengajuan = $request->tujuan_pengajuan;
         $model->keterangan_pengajuan = $request->keterangan_pengajuan;
+        $model->tanggal_pengajuan = $request->tanggal;
         $model->id_user = Auth::user()->id;
 
         $model->save();

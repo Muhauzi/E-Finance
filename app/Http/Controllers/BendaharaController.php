@@ -38,7 +38,11 @@ class BendaharaController extends Controller
 
         $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $pemasukanBulanan - $pengeluaranBulanan;
 
-        return view('dashboard', compact('saldo_awal', 'saldo_akhir', 'pemasukan', 'pengeluaran'));
+        $modelPengajuan = new PengajuanDanaModel();
+        $pengajuan = $modelPengajuan->getDataPengajuan();
+
+
+        return view('dashboard', compact('saldo_awal', 'saldo_akhir', 'pemasukan', 'pengeluaran', 'pengajuan'));
     }
 
     public function saldo()
@@ -495,6 +499,10 @@ class BendaharaController extends Controller
         }
         $data->save();
 
-        return redirect()->route('keuangan.pengajuan_dana.show', $id)->with('success', 'Pengajuan dana berhasil diverifikasi');
+        if (Auth::user()->role == 'Bendahara') {
+            return redirect()->route('keuangan.pengajuan_dana')->with('success', 'Data berhasil diverifikasi');
+        } else {
+            return redirect()->route('pimpinan.pengajuan_dana')->with('success', 'Data berhasil diverifikasi');
+        }
     }
 }
