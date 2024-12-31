@@ -27,6 +27,7 @@
                                 <th>Nominal Pengajuan</th>
                                 <th>Verifikasi Atasan</th>
                                 <th>Alokasi Bendahara</th>
+                                <th>Laporan PJ</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -52,7 +53,15 @@
                                     <span class="badge bg-success">Disetujui</span>
                                     @else
                                     <span class="badge bg-danger">Ditolak</span>
-                                    @endif                                    
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->laporan)
+                                    <a href="{{ asset('uploads/laporan_pengajuan/' . $item->laporan) }}" class="btn btn-sm btn-success" download>
+                                        <i class="ri-download-2-line align-bottom me-1"></i> Unduh</a>
+                                    @else
+                                    <span class="badge bg-danger">Belum Ada Laporan</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @if (Auth::user()->role == 'Pimpinan')

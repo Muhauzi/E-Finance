@@ -102,7 +102,7 @@
                                             <label for="sumber" class="form-label">Alokasi Bendahara</label>
                                         </td>
                                         <td>
-                                            @if ($data->verifikasi_pimpinan == 'disetujui' && Auth::user()->role == 'Bendahara')
+                                            @if ($data->verifikasi_pimpinan == 'disetujui' && $data->verifikasi_bendahara == 'pending' && Auth::user()->role == 'Bendahara')
                                             <form action="{{ route('keuangan.pengajuan_dana.verifikasi', $data->id) }}" method="POST">
                                                 @csrf
                                                 @method('POST')

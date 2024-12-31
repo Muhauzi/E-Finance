@@ -442,6 +442,14 @@ class BendaharaController extends Controller
     {
         $model = new PengajuanDanaModel();
         $data = $model->getDataPengajuan();
+        foreach ($data as $key => $value) {
+            $laporan = $model->getLaporan($value->id);
+            if ($laporan && $laporan->file_laporan) {
+                $data[$key]->laporan = $laporan->file_laporan;
+            } else {
+                $data[$key]->laporan = false;
+            }
+        }
         return view('bendahara.pengajuan.index', compact('data'));
     }
 
