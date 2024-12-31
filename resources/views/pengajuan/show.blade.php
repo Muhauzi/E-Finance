@@ -68,8 +68,8 @@
                                         </td>
                                         <td>
                                             @if ($data->laporan)
-                                            <a href="{{ asset('uploads/laporan_pengajuan/' . $data->laporan) }}" class="btn btn-sm btn-success" download>
-                                                <i class="ri-download-2-line align-bottom me-1"></i> Download Laporan Pertanggungjawaban
+                                            <a href="{{ asset('uploads/laporan_pengajuan/' . $data->laporan) }}" class="btn btn-success" download>
+                                                <i class="ri-download-2-line align-bottom me-1"></i> Download Laporan
                                             </a>
                                             @else
                                             <button class="btn btn-danger">Belum ada laporan pertanggungjawaban</button>
