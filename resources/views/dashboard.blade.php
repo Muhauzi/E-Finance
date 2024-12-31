@@ -26,7 +26,7 @@
                                 Pengajuan Dana</p>
                             <div class="d-flex align-items-center mb-3">
                                 <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value"
-                                        data-target="9">0</span></h4>
+                                        data-target="{{ $pengajuan->count() }}">0</span></h4>
                             </div>
                         </div>
                     </div>
@@ -147,14 +147,16 @@
                                 </td>
                                 <td>
                                     <h5 class="mb-0">
-                                        @if ($item->verifikasi_pimpinan == 'pending' && $item->verifikasi_bendahara == 'pending')
-                                            <span class="badge bg-soft-warning text-warning">Pending (25%)</span>
+                                        @if ($item->laporan != false)
+                                        <span class="badge bg-soft-info text-success">Approved (100%)</span>
+                                        @elseif ( $item->verifikasi_pimpinan == 'disetujui' && $item->verifikasi_bendahara == 'disetujui')
+                                        <span class="badge bg-soft-success text-info">In Progress (75%)</span>
                                         @elseif ($item->verifikasi_pimpinan == 'disetujui')
-                                            <span class="badge bg-soft-info text-info">In Progress (50%)</span>
-                                        @elseif ( $item->verifikasi_bendahara == 'disetujui')
-                                            <span class="badge bg-soft-success text-success">Approved (100%)</span>
+                                        <span class="badge bg-soft-info text-info">In Progress (50%)</span>
+                                        @elseif ($item->verifikasi_pimpinan == 'pending' && $item->verifikasi_bendahara == 'pending')
+                                        <span class="badge bg-soft-warning text-warning">Pending (25%)</span>
                                         @else
-                                            <span class="badge bg-soft-danger text-danger">Rejected</span>
+                                        <span class="badge bg-soft-danger text-danger">Rejected</span>
                                         @endif
                                     </h5>
                                 </td>

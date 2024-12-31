@@ -40,6 +40,14 @@ class BendaharaController extends Controller
 
         $modelPengajuan = new PengajuanDanaModel();
         $pengajuan = $modelPengajuan->getDataPengajuan();
+        foreach ($pengajuan as $key => $value) {
+            $laporan = $modelPengajuan->getLaporan($value->id);
+            if ($laporan && $laporan->file_laporan) {
+                $pengajuan[$key]->laporan = $laporan->file_laporan;
+            } else {
+                $pengajuan[$key]->laporan = false;
+            }
+        }
 
 
         return view('dashboard', compact('saldo_awal', 'saldo_akhir', 'pemasukan', 'pengeluaran', 'pengajuan'));
