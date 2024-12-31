@@ -5,10 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [AuthenticatedSessionController::class, 'create'])
+        ->name('login-page');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
