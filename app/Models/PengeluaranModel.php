@@ -43,7 +43,21 @@ class PengeluaranModel extends Model
         return $this->belongsTo(DetailAccountModel::class, 'id_detail_account', 'id');
     }
 
-    public function getTotalPengeluaranBulanan()
+    public function getTotalPengeluaranAll()
+    {
+        return $this->join('detail_pengeluaran', 'pengeluaran.id', '=', 'detail_pengeluaran.pengeluaran_id')
+            ->sum('detail_pengeluaran.total_harga');
+    }
+
+    public function getPengeluaranBulanan($month, $year)
+    {
+        return $this->join('detail_pengeluaran', 'pengeluaran.id', '=', 'detail_pengeluaran.pengeluaran_id')
+            ->whereMonth('pengeluaran.tanggal', $month)
+            ->whereYear('pengeluaran.tanggal', $year)
+            ->sum('detail_pengeluaran.total_harga');
+    }
+
+    public function getTotalPengeluaranBulanan($year)
     {
         $bulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -51,9 +65,7 @@ class PengeluaranModel extends Model
         ];
         $total = [];
         foreach ($bulan as $key => $value) {
-            $total[$value] = $this->whereMonth('tanggal', $key + 1)
-                ->join('detail_pengeluaran', 'pengeluaran.id', '=', 'detail_pengeluaran.pengeluaran_id')
-                ->sum('detail_pengeluaran.total_harga');
+            $total[$value] = $this->getPengeluaranBulanan($key + 1, $year);
         }
 
         return $total;

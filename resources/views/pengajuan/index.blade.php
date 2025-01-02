@@ -21,12 +21,6 @@
                         <div class="d-flex justify-content-sm-end mb-3">
                             <a href="{{ route('karyawan.pengajuan.create') }}" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Ajukan Dana</a>
                         </div>
-                        <div class="d-flex justify-content-sm-end mb-3">
-                            <form action="{{ route('karyawan.pengajuan.index') }}" method="GET" class="d-flex">
-                                <input type="text" name="search" class="form-control me-2" placeholder="Search..." value="{{ request()->query('search') }}">
-                                <button type="submit" class="btn btn-primary">Search</button>
-                            </form>
-                        </div>
                     </div>
                     <table class="table table-responsive">
                         <thead>
@@ -44,7 +38,7 @@
                             @foreach ($data as $key => $item)
                             @if ($item->id_user == Auth::user()->id)
                             <tr class="text-center">
-                                <td>{{ $data->firstItem() + $key }}</td>
+                                <td>{{ $key }}</td>
                                 <td>{{ $item->tanggal_pengajuan }}</td>
                                 <td>{{ $item->tujuan_pengajuan }}</td>
                                 <td>Rp. {{ number_format($item->nominal_pengajuan, 0, ',', '.') }},-</td>
@@ -109,9 +103,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-center">
-                        {{ $data->links() }}
-                    </div>
                 </div>
             </div>
         </div>

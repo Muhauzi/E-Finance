@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-lg-9">
                                 <div class="input-group mb-3">
-                                    <input type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}">
+                                    <input type="email" class="form-control" name="email" value="{{ old('email', $user->email ?? '-') }}">
                                     @error('email')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -235,7 +235,7 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" name="username" value="{{ old('username', $user->username) }}">
+                                        <input type="text" class="form-control" name="username" value="{{ old('username', $user->username ?? '-') }}">
                                         @error('username')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -263,22 +263,23 @@
                                 <div class="col-lg-3">
                                     <label for="levelUserInput" class="form-label">Level User</label>
                                 </div>
+                                
                                 <div class="col-lg-9">
                                     <div class="input-group mb-3">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserAdmin" value="Admin" {{ old('level_user', $user->role) == 'Admin' ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserAdmin" value="Admin" {{ old('level_user', $user->role ?? '') == 'Admin' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="levelUserAdmin">Admin</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserBendahara" value="Bendahara" {{ old('level_user', $user->role) == 'Bendahara' ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserBendahara" value="Bendahara" {{ old('level_user', $user->role ?? '') == 'Bendahara' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="levelUserBendahara">Bendahara</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserUser" value="User" {{ old('level_user', $user->role) == 'User' ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserUser" value="User" {{ old('level_user', $user->role ?? '') == 'User' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="levelUserUser">User</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserPimpinan" value="Pimpinan" {{ old('level_user', $user->role) == 'Pimpinan' ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="radio" name="level_user" id="levelUserPimpinan" value="Pimpinan" {{ old('level_user', $user->role ?? '') == 'Pimpinan' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="levelUserPimpinan">Pimpinan</label>
                                         </div>
                                     </div>

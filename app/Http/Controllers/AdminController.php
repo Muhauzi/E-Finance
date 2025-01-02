@@ -122,16 +122,26 @@ class AdminController extends Controller
         $data->save();
 
         if ($request->has('buat_akun') && $request->buat_akun == true) {
-            $user = UserModel::where('id_data_pegawai', $id)->first();
-            $user->username = $request->username;
-            $user->role = $request->level_user;
-            $user->email = $request->email;
-            if ($request->has('password') && $request->password != null) {
-                $user->password = bcrypt($request->password);
+            if (UserModel::where('id_data_pegawai', $id)->exists()) {
+                $user = UserModel::where('id_data_pegawai', $id)->first();
+                $user->username = $request->username;
+                $user->role = $request->level_user;
+                $user->email = $request->email;
+                if ($request->has('password') && $request->password != null) {
+                    $user->password = bcrypt($request->password);
+                } else {
+                    $user->password = $user->password;
+                }
+                $user->save();
             } else {
-                $user->password = $user->password;
+                $user = new UserModel();
+                $user->username = $request->username;
+                $user->role = $request->level_user;
+                $user->email = $request->email;
+                $user->password = bcrypt($request->username);
+                $user->id_data_pegawai = $data->id;
+                $user->save();
             }
-            $user->save();
         }
 
         return redirect()->route('admin.pegawai')->with('success', 'Data berhasil diupdate');

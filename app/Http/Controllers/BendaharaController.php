@@ -26,17 +26,28 @@ class BendaharaController extends Controller
 {
     public function index()
     {
+
+        if (Auth::user()->role == 'User') {
+            return redirect()->route('karyawan.pengajuan');
+        }
+        
         $modelSaldo = new SaldoModel();
         $modelPemasukan = new PemasukanModel();
         $modelPengeluaran = new PengeluaranModel();
         $modelDetailPengeluaran = new DetailPengeluaran();
         $saldo_awal = $modelSaldo->getSaldoAll()->first();
-        $pemasukan = $modelPemasukan->getTotalPemasukanBulanan();
-        $pengeluaran = $modelPengeluaran->getTotalPengeluaranBulanan();
+        $pemasukan = $modelPemasukan->getTotalPemasukanBulanan(date('Y'));
+        $pengeluaran = $modelPengeluaran->getTotalPengeluaranBulanan(date('Y'));
+        // dd($pengeluaran, $pemasukan);
         $pengeluaranBulanan = $modelDetailPengeluaran->totalPenegeluranBulanan(date('m'), date('Y'));
         $pemasukanBulanan = $modelPemasukan->getPemasukanBulanan(date('m'), date('Y'));
 
-        $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $pemasukanBulanan - $pengeluaranBulanan;
+        $uangMasuk = $modelPemasukan->getPemasukanAll()->sum('nominal');
+        $uangKeluar = $modelPengeluaran->getTotalPengeluaranAll();
+        // dd($uangMasuk, $uangKeluar);
+        $saldo_akhir = $modelSaldo->getSaldoAll()->sum('nominal') + $uangMasuk - $uangKeluar;
+        
+        // dd($saldo_akhir, $pemasukan, $pengeluaran, $saldo_awal);
 
         $modelPengajuan = new PengajuanDanaModel();
         $pengajuan = $modelPengajuan->getDataPengajuan();

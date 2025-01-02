@@ -34,7 +34,7 @@ class PemasukanModel extends Model
             ->get();
     }
 
-    public function getTotalPemasukanBulanan()
+    public function getTotalPemasukanBulanan($year)
     {
         $bulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -42,8 +42,7 @@ class PemasukanModel extends Model
         ];
         $total = [];
         foreach ($bulan as $key => $value) {
-            $total[$value] = $this->whereMonth('tanggal', $key + 1)
-                ->sum('nominal');
+            $total[$value] = $this->getPemasukanBulanan($key + 1, $year);
         }
 
         return $total;

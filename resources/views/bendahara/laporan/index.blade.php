@@ -24,7 +24,8 @@
                                 <div>
                                     <form id="filterForm" method="GET">
                                         <div class="input-group">
-                                            <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Filter by Date" value="{{ request('tanggal') }}">
+                                            <input type="date" class="form-control" name="start_date" required>
+                                            <input type="date" class="form-control" name="end_date" required>
                                             <button type="button" id="filterBtn" class="btn btn-primary">Filter</button>
                                         </div>
                                     </form>
@@ -98,31 +99,25 @@
     </div>
 
     <script>
-        document.getElementById('filterBtn').addEventListener('click', function() {
-            const filterDate = document.getElementById('tanggal').value; // Ambil nilai input tanggal
-            const rows = document.querySelectorAll('#tableBody tr'); // Ambil semua baris tabel
+        const filterBtn = document.getElementById('filterBtn');
+        const filterForm = document.getElementById('filterForm');
+        const customerTable = document.getElementById('customerTable');
+        const tableBody = document.getElementById('tableBody');
+        const customerList = document.getElementById('customerList');
+        const noresult = document.querySelector('.noresult');
 
-            if (!filterDate) {
-                alert("Harap masukkan tanggal untuk memfilter!");
-                return;
-            }
-
-            let hasData = false;
-
-            rows.forEach(row => {
-                const rowDate = row.getAttribute('data-tanggal'); // Ambil atribut tanggal dari setiap baris
-
-                if (rowDate === filterDate) {
-                    row.style.display = ''; // Tampilkan baris jika tanggal sesuai
-                    hasData = true;
-                } else {
-                    row.style.display = 'none'; // Sembunyikan baris yang tidak sesuai
-                }
-            });
-
-            if (!hasData) {
-                alert(`Tidak ada data ditemukan untuk tanggal ${filterDate}`);
-            }
+        filterBtn.addEventListener('click', function () {
+            filterForm.submit();
         });
+
+        const options = {
+            valueNames: ['tanggal', 'keterangan', 'Pengeluaran', 'Pemasukan', 'Saldo-Akhir']
+        };
+
+        const userList = new List('customerList', options);
+
+        if (tableBody.children.length === 0) {
+            noresult.style.display = 'block';
+        }
     </script>
 </x-app-layout>
